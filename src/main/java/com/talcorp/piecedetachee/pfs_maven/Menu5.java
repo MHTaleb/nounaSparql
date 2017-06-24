@@ -519,8 +519,8 @@ public class Menu5 extends JPanel implements MouseListener {
 	public boolean checkPrivacyConceptsExceptions() {
 		boolean checked = false;
 		try {
-			if (!dlField.getText().equals("")) {
-				if (Integer.parseInt(dlField.getText()) > 0) {
+			if (!dlField.getText().trim().isEmpty()) {
+				
 					Date dd = new Date(getDateString(dlDD)), ed = new Date(
 							getDateString(dlED));
 					int diff = ed.compareTo(dd);
@@ -561,17 +561,12 @@ public class Menu5 extends JPanel implements MouseListener {
 											.getYear());
 									System.out.println(dd.getYear()	);
 						
-								if (dif < 1) {
-								JOptionPane
-										.showMessageDialog(null,
-												"Period of validity of a driver's license\nmust be at least 12 months.");
-								return false;
-							}
+							
 						}
 
 					}
 					checked = true;
-				}
+				
 			} else {
 
 				if (Menu1.service == "RentVehicle")
@@ -585,9 +580,11 @@ public class Menu5 extends JPanel implements MouseListener {
 											+ "Land\n Transportation service ->Rent vehicle ,\nthe Driver License is a required object");
 					return false;
 				}
+                                dlField.requestFocus();
+                                return false;
 			}
-			if (!ppField.getText().equals("")) {
-				if (Integer.parseInt(ppField.getText()) > 0) {
+			if (!ppField.getText().trim().isEmpty()) {
+				
 					Date dd = new Date(getDateString(ppDD)), ed = new Date(
 							getDateString(ppED));
 					int diff = ed.compareTo(dd);
@@ -605,7 +602,7 @@ public class Menu5 extends JPanel implements MouseListener {
 
 					}
 					checked = true;
-				}
+				
 			} else {
 
 				if ((Menu1.service == "BuyFlightTicket" || Menu1.service == "FlightReservation"))
@@ -619,9 +616,11 @@ public class Menu5 extends JPanel implements MouseListener {
 											+ "Air\n Transportation service , the passport is a required object");
 					return false;
 				}
+                                ppField.requestFocus();
+                                return false;
 			}
 
-			if (Integer.parseInt(idcnField.getText()) > 0) {
+			if (!idcnField.getText().trim().isEmpty()) {
 				Date dd = new Date(getDateString(idDD)), ed = new Date(
 						getDateString(idED));
 				int diff = ed.compareTo(dd);
@@ -640,9 +639,13 @@ public class Menu5 extends JPanel implements MouseListener {
 
 				}
 				checked = true;
-			}
+			}else{
+                            idcnField.requestFocus();
+                            return false;
+                        }
 
 		} catch (Exception e) {
+                    e.printStackTrace();
 			JOptionPane.showMessageDialog(null,
 					"Please verify your input before you save");
 		}

@@ -510,15 +510,25 @@ public class Client {
 				+ "SELECT  * "
 				+ "WHERE"
 				+ " { ?s  a  ex:Client ."
+                        
 				+ " ?s ex:hasFirstName ?firstName "
 				+ " OPTIONAL" 
 				+ "    { ?firstName  ex:hasValue  ?o } ." 
-				+ " ?s ex:hasLastName ?lastName "
-				+ " OPTIONAL" 
-				+ "    { ?lastName  ex:hasValue  ?o1 } ." 
-				+ " ?s ex:hasBdDate ?bdProperty "
+
+                                + " ?s ex:hasLastName ?lastName "
+				+ " OPTIONAL"
+                                + "    { ?lastName  ex:hasValue  ?o1 } ." 
+				
+                                + " ?s ex:hasBdDate ?bdProperty "
 				+ " OPTIONAL" 
 				+ "    { ?bdProperty  ex:hasValue  ?bd } ."
+	
+                                + " ?s ex:hasDriverLicense ?drvLProperty "
+				+ " OPTIONAL" 
+				+ "    { ?drvLProperty  ex:hasDeliveryDate  ?PdelevryDate } ."
+				+ "         OPTIONAL" 
+				+ "             { ?PdelevryDate  ex:hasValue  ?delevryDate } ."
+                        
 				+ "}";
 
 		Query qry = QueryFactory.create(query);
@@ -532,17 +542,28 @@ public class Client {
 			String myFirstName =""+querySolution.get("o").toString().replace("http://www.semanticweb.org/home/ontologies/2016/10/ex#", "ex:");
 			String myLastName =""+querySolution.get("o1").toString().replace("http://www.semanticweb.org/home/ontologies/2016/10/ex#", "ex:");
 			String myBirthDate =""+querySolution.get("bd").toString().replace("http://www.semanticweb.org/home/ontologies/2016/10/ex#", "ex:");
+			String delevryDate =""+querySolution.get("delevryDate").toString().replace("http://www.semanticweb.org/home/ontologies/2016/10/ex#", "ex:");
 
                         if(myFirstName.toLowerCase().equals(firstName.toLowerCase()) && myLastName.toLowerCase().equals(lastName.toLowerCase())){
-                            System.out.println("First Name : "+myFirstName+" Last Name : "+myLastName+" birth in : "+myBirthDate);
+                            System.out.println("First Name : "+myFirstName+" Last Name : "+myLastName+" birth in : "+myBirthDate+"\n"
+                                    + "licence delivred in : "+delevryDate);
+                            
                             LocalDate today = LocalDate.now();
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                             LocalDate ldBirthDate = LocalDate.parse(myBirthDate,formatter);
-                            
+                            LocalDate delevryPermis = LocalDate.parse(delevryDate, formatter);
                             long age = ChronoUnit.YEARS.between(ldBirthDate, today);
                             if(age<25 || age>75) {JOptionPane.showMessageDialog(null, "To rent a vehicle your age must be\nbetween [25,75]");} else
                             if(age<18) {JOptionPane.showMessageDialog(null, "people under 18 years old doesn't have a driver license");}else{
-                            JOptionPane.showMessageDialog(null, "Your age is accepted : you'r allowed to rent a vehicle");}
+                                
+                                long currentPassedTime = ChronoUnit.MONTHS.between(delevryPermis, today);
+                                if (currentPassedTime<12) {
+                                JOptionPane.showMessageDialog(null, "Period of validity of a driver's license\nmust be at least 12 months.");
+                                    
+                                } else {
+                                JOptionPane.showMessageDialog(null, "Your age is accepted : you'r allowed to rent a vehicle");}
+                                }
+                                
                         }
 			}
 			catch(NullPointerException e){
